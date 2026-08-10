@@ -1,0 +1,106 @@
+#pragma once
+
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
+#include <utility>
+#include <string>
+#include <expected>
+#include <cstring>
+#include <cerrno>
+
+template <typename T>
+using Result = std::expected<T, std::string>;
+
+class UniqueFd {
+public:
+    UniqueFd() noexcept = default;
+    explicit UniqueFd(int fd) noexcept : fd_(fd) {}
+    ~UniqueFd() { reset(); }
+
+    UniqueFd(const UniqueFd&) = delete;
+    UniqueFd& operator=(const UniqueFd&) = delete;
+
+    UniqueFd(UniqueFd&& other) noexcept : fd_(std::exchange(other.fd_, -1)) {}
+    UniqueFd& operator=(UniqueFd&& other) noexcept {
+        if (this != &other) {
+            reset();
+            fd_ = std::exchange(other.fd_, -1);
+        }
+        return *this;
+    }
+
+    [[nodiscard]] int get() const noexcept { return fd_; }
+    [[nodiscard]] bool is_valid() const noexcept { return fd_ >= 0; }
+    
+    void reset() noexcept {
+        if (fd_ >= 0) { ::close(fd_); fd_ = -1; }
+    }
+private:
+    int fd_{-1};
+};
+
+class UdsIpc {
+public:
+    static Result<void> send_fd(int socket_fd, int fd_to_send) {
+        // FIX: Use empty braces {} for complete zero-initialization
+        struct msghdr msg{}; 
+        char buf[1] = {'!'}; 
+        
+        // Use standard initialization for iovec as well
+        struct iovec iov{}; 
+        iov.iov_base = buf;
+        iov.iov_len = 1;
+        
+        msg.msg_iov = &iov;
+        msg.msg_iovlen = 1;
+
+        union {
+            char buf[CMSG_SPACE(sizeof(int))];
+            struct cmsghdr align;
+        } control_msg{}; // Zero-initialize the union too
+
+        msg.msg_control = control_msg.buf;
+        msg.msg_controllen = sizeof(control_msg.buf);
+
+        struct cmsghdr* cmsg = CMSG_FIRSTHDR(&msg);
+        cmsg->cmsg_level = SOL_SOCKET;
+        cmsg->cmsg_type = SCM_RIGHTS;
+        cmsg->cmsg_len = CMSG_LEN(sizeof(int));
+        std::memcpy(CMSG_DATA(cmsg), &fd_to_send, sizeof(int));
+
+        if (::sendmsg(socket_fd, &msg, 0) < 0) return std::unexpected(std::strerror(errno));
+        return {};
+    }
+
+    static Result<UniqueFd> recv_fd(int socket_fd) {
+        // FIX: Use empty braces {} for complete zero-initialization
+        struct msghdr msg{}; 
+        char buf[1];
+        
+        struct iovec iov{};
+        iov.iov_base = buf;
+        iov.iov_len = 1;
+        
+        msg.msg_iov = &iov;
+        msg.msg_iovlen = 1;
+
+        union {
+            char buf[CMSG_SPACE(sizeof(int))];
+            struct cmsghdr align;
+        } control_msg{}; // Zero-initialize the union too
+
+        msg.msg_control = control_msg.buf;
+        msg.msg_controllen = sizeof(control_msg.buf);
+
+        if (::recvmsg(socket_fd, &msg, 0) < 0) return std::unexpected(std::strerror(errno));
+
+        struct cmsghdr* cmsg = CMSG_FIRSTHDR(&msg);
+        if (cmsg && cmsg->cmsg_level == SOL_SOCKET && cmsg->cmsg_type == SCM_RIGHTS) {
+            int received_fd;
+            std::memcpy(&received_fd, CMSG_DATA(cmsg), sizeof(int));
+            return UniqueFd{received_fd};
+        }
+        return std::unexpected("No valid FD received");
+    }
+};
