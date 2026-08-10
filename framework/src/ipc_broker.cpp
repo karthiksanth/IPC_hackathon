@@ -12,6 +12,8 @@
 struct SharedGroup {
     UniqueFd mem_fd;
     size_t size;
+    uint64_t type_hash; // Store the expected fingerprint for this group
+    size_t struct_size;
 };
 
 class BrokerRegistry {
@@ -21,13 +23,23 @@ public:
         std::string group_name(req.group_name);
 
         auto it = groups_.find(group_name);
+        
+        // --- VALIDATION IF GROUP ALREADY EXISTS ---
         if (it != groups_.end()) {
-            if (req.memory_size != it->second.size) {
-                return std::unexpected("Group size mismatch");
+            // 1. Verify exact Type Hash (Fails if field types or order changed)
+            if (it->second.type_hash != req.type_hash) {
+                return std::unexpected(
+                    "REJECTED: Struct layout mismatch! Producer and Listener were compiled with different struct definitions."
+                );
+            }
+            // 2. Double check size safety
+            if (it->second.struct_size != req.struct_size) {
+                return std::unexpected("REJECTED: Struct size mismatch!");
             }
             return it->second.mem_fd.get();
         }
 
+        // --- CREATE NEW GROUP (First client registering) ---
         int fd = ::memfd_create(group_name.c_str(), MFD_ALLOW_SEALING | MFD_CLOEXEC);
         if (fd < 0) return std::unexpected("memfd_create failed");
         
@@ -38,14 +50,20 @@ public:
 
         ::fcntl(fd, F_ADD_SEALS, F_SEAL_GROW | F_SEAL_SHRINK);
 
-        groups_.emplace(group_name, SharedGroup{ UniqueFd{fd}, req.memory_size });
+        // Store the group along with its expected type fingerprint
+        groups_.emplace(group_name, SharedGroup{ 
+            UniqueFd{fd}, 
+            req.memory_size, 
+            req.type_hash, 
+            req.struct_size 
+        });
+        
         return groups_[group_name].mem_fd.get();
     }
 private:
     std::mutex mutex_;
     std::unordered_map<std::string, SharedGroup> groups_;
 };
-
 class SecureIpcBroker {
 public:
     Result<void> run() {

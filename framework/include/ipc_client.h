@@ -8,14 +8,14 @@
 class IpcClient {
 public:
     template <typename T>
-    static Result<IpcClient> create_producer(const std::string& group, uint64_t capacity) {
-        return register_app(group, RingBufferHeader<T>::calculate_size(capacity), ClientRole::PRODUCER);
-    }
+static Result<IpcClient> create_producer(const std::string& group, uint64_t capacity) {
+    return register_app<T>(group, RingBufferHeader<T>::calculate_size(capacity), ClientRole::PRODUCER);
+}
 
-    template <typename T>
-    static Result<IpcClient> create_listener(const std::string& group, uint64_t capacity) {
-        return register_app(group, RingBufferHeader<T>::calculate_size(capacity), ClientRole::LISTENER);
-    }
+template <typename T>
+static Result<IpcClient> create_listener(const std::string& group, uint64_t capacity) {
+    return register_app<T>(group, RingBufferHeader<T>::calculate_size(capacity), ClientRole::LISTENER);
+}
 
     std::span<std::byte> memory() {
         return std::span<std::byte>(static_cast<std::byte*>(mapped_ptr_), size_);
@@ -48,6 +48,7 @@ private:
 
     IpcClient() = default;
 
+    template <typename T>
     static Result<IpcClient> register_app(const std::string& group, size_t size, ClientRole role) {
         const char* env_token = std::getenv("IPC_SECRET_TOKEN");
         if (!env_token) return std::unexpected("Missing IPC_SECRET_TOKEN in environment");
@@ -57,7 +58,11 @@ private:
         std::strncpy(req.group_name, group.c_str(), sizeof(req.group_name) - 1);
         req.role = role;
         req.memory_size = size;
-
+        
+        // AUTOMATICALLY INJECT COMPILE-TIME FINGERPRINT
+        req.type_hash = get_type_fingerprint<T>();
+        req.struct_size = sizeof(T);
+        req.struct_align = alignof(T);
         int sock = ::socket(AF_UNIX, SOCK_STREAM, 0);
         UniqueFd client_sock{sock};
         struct sockaddr_un addr{};
