@@ -1,6 +1,7 @@
 #include "ipc_client.h"
-#include "my_structs.h"
+#include "my_struct.h"
 #include <iostream>
+#include <ipc_ringbuffer.h>
 
 int main() {
     std::cout << "Starting Listener...\n";
