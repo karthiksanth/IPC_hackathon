@@ -1,25 +1,45 @@
 #pragma once
 #include "ipc_utils.h"
 #include "ipc_protocol.h"
+#include "ipc_ringbuffer.h"          // For Fixed types
+#include "ipc_variable_ringbuffer.h" // For Variable types
 #include <sys/mman.h>
-#include <iostream>
 #include <span>
 
 class IpcClient {
 public:
+    // ==========================================================
+    // 1. FIXED-SIZE API (For standard structs)
+    // ==========================================================
     template <typename T>
-static Result<IpcClient> create_producer(const std::string& group, uint64_t capacity) {
-    return register_app<T>(group, RingBufferHeader<T>::calculate_size(capacity), ClientRole::PRODUCER);
-}
-
-template <typename T>
-static Result<IpcClient> create_listener(const std::string& group, uint64_t capacity) {
-    return register_app<T>(group, RingBufferHeader<T>::calculate_size(capacity), ClientRole::LISTENER);
-}
-
-    std::span<std::byte> memory() {
-        return std::span<std::byte>(static_cast<std::byte*>(mapped_ptr_), size_);
+    static Result<IpcClient> create_fixed_producer(const std::string& group, uint64_t slot_capacity) {
+        size_t memory_needed = RingBufferHeader<T>::calculate_size(slot_capacity);
+        return register_app<T>(group, memory_needed, ClientRole::PRODUCER);
     }
+
+    template <typename T>
+    static Result<IpcClient> create_fixed_listener(const std::string& group, uint64_t slot_capacity) {
+        size_t memory_needed = RingBufferHeader<T>::calculate_size(slot_capacity);
+        return register_app<T>(group, memory_needed, ClientRole::LISTENER);
+    }
+
+    // ==========================================================
+    // 2. VARIABLE-SIZE API (For Metadata + Dynamic Heap)
+    // ==========================================================
+    template <typename Meta>
+    static Result<IpcClient> create_variable_producer(const std::string& group, uint64_t slot_capacity, uint64_t heap_capacity) {
+        size_t memory_needed = VariableMemoryHeader::calculate_size<Meta>(slot_capacity, heap_capacity);
+        return register_app<Meta>(group, memory_needed, ClientRole::PRODUCER);
+    }
+
+    template <typename Meta>
+    static Result<IpcClient> create_variable_listener(const std::string& group, uint64_t slot_capacity, uint64_t heap_capacity) {
+        size_t memory_needed = VariableMemoryHeader::calculate_size<Meta>(slot_capacity, heap_capacity);
+        return register_app<Meta>(group, memory_needed, ClientRole::LISTENER);
+    }
+
+    // Memory access and RAII cleanup...
+    std::span<std::byte> memory() { return std::span<std::byte>(static_cast<std::byte*>(mapped_ptr_), size_); }
 
     ~IpcClient() {
         if (mapped_ptr_ != MAP_FAILED) ::munmap(mapped_ptr_, size_);
@@ -45,7 +65,6 @@ private:
     void* mapped_ptr_{MAP_FAILED};
     size_t size_{0};
     UniqueFd shm_fd_;
-
     IpcClient() = default;
 
     template <typename T>

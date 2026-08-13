@@ -8,6 +8,11 @@
 #include <expected>
 #include <cstring>
 #include <cerrno>
+#include <linux/futex.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+#include <climits>
+#include <atomic>
 
 template <typename T>
 using Result = std::expected<T, std::string>;
@@ -102,5 +107,15 @@ public:
             return UniqueFd{received_fd};
         }
         return std::unexpected("No valid FD received");
+    }
+};
+
+class IpcFutex {
+public:
+    static void wait(std::atomic<uint32_t>& futex_word, uint32_t expected_val) {
+        ::syscall(SYS_futex, &futex_word, FUTEX_WAIT, expected_val, nullptr, nullptr, 0);
+    }
+    static void wake_all(std::atomic<uint32_t>& futex_word) {
+        ::syscall(SYS_futex, &futex_word, FUTEX_WAKE, INT_MAX, nullptr, nullptr, 0);
     }
 };

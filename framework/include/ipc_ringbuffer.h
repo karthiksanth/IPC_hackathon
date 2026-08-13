@@ -13,16 +13,6 @@
 template <typename T>
 concept IpcSafe = std::is_trivially_copyable_v<T>;
 
-class IpcFutex {
-public:
-    static void wait(std::atomic<uint32_t>& futex_word, uint32_t expected_val) {
-        ::syscall(SYS_futex, &futex_word, FUTEX_WAIT, expected_val, nullptr, nullptr, 0);
-    }
-    static void wake_all(std::atomic<uint32_t>& futex_word) {
-        ::syscall(SYS_futex, &futex_word, FUTEX_WAKE, INT_MAX, nullptr, nullptr, 0);
-    }
-};
-
 template <IpcSafe T>
 struct alignas(64) Slot {
     std::atomic<uint64_t> seqlock{0};
