@@ -1,0 +1,52 @@
+# Create the header-only framework library
+add_library(IpcClient INTERFACE)
+target_include_directories(IpcClient INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# Compile the Broker
+add_executable(ipc_broker src/ipc_broker.cpp)
+target_link_libraries(ipc_broker PRIVATE IpcClient)
+##cmake_minimum_required(VERSION 3.20)
+##project(IpcFramework CXX)
+##
+##set(CMAKE_CXX_STANDARD 23)
+##set(CMAKE_CXX_STANDARD_REQUIRED ON)
+##
+### 1. Define the Client Library (Header-only because of templates)
+##add_library(IpcClient INTERFACE)
+##target_include_directories(IpcClient INTERFACE 
+##    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+##    $<INSTALL_INTERFACE:include>
+##)
+##
+### 2. Build the Broker Daemon
+##add_executable(ipc_broker src/ipc_broker.cpp)
+### The broker also uses the headers internally
+##target_link_libraries(ipc_broker PRIVATE IpcClient)
+##
+### 3. Generate the Broker's systemd file (Runs as root)
+##configure_file(
+##    ${CMAKE_CURRENT_SOURCE_DIR}/systemd/ipc_app.service.in
+##    ${CMAKE_CURRENT_BINARY_DIR}/ipc_broker.service
+##    @ONLY
+##)
+##
+### ---------------------------------------------------------
+### Installation Instructions (For when you run 'sudo make install')
+### ---------------------------------------------------------
+##
+### Install the Broker binary
+##install(TARGETS ipc_broker DESTINATION bin)
+##
+### Install the Client Headers
+##install(DIRECTORY include/ DESTINATION include/IpcFramework)
+##
+### Install the Broker systemd service and the Token Generator
+##install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ipc_broker.service
+##              ${CMAKE_CURRENT_SOURCE_DIR}/systemd/ipc-token-gen.service
+##        DESTINATION /lib/systemd/system)
+##
+### Install the CMake Config file so developers can use find_package() and your systemd macro
+##install(FILES IpcFrameworkConfig.cmake
+##        DESTINATION lib/cmake/IpcFramework)
+##install(FILES systemd/ipc_app.service.in
+##        DESTINATION lib/cmake/IpcFramework/systemd)
