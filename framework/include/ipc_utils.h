@@ -10,13 +10,19 @@
 #include <cerrno>
 #include <linux/futex.h>
 #include <sys/syscall.h>
-#include <unistd.h>
 #include <climits>
 #include <atomic>
+#include <type_traits> 
 
+// --- COMPILE-TIME QoS POLICIES ---
+struct KeepLastPolicy {}; 
+struct KeepAllPolicy {};
+
+// --- MODERN C++ ERROR HANDLING ---
 template <typename T>
 using Result = std::expected<T, std::string>;
 
+// --- RAII FILE DESCRIPTOR WRAPPER ---
 class UniqueFd {
 public:
     UniqueFd() noexcept = default;
@@ -45,14 +51,13 @@ private:
     int fd_{-1};
 };
 
+// --- UNIX DOMAIN SOCKET IPC (FD PASSING) ---
 class UdsIpc {
 public:
     static Result<void> send_fd(int socket_fd, int fd_to_send) {
-        // FIX: Use empty braces {} for complete zero-initialization
         struct msghdr msg{}; 
         char buf[1] = {'!'}; 
         
-        // Use standard initialization for iovec as well
         struct iovec iov{}; 
         iov.iov_base = buf;
         iov.iov_len = 1;
@@ -63,7 +68,7 @@ public:
         union {
             char buf[CMSG_SPACE(sizeof(int))];
             struct cmsghdr align;
-        } control_msg{}; // Zero-initialize the union too
+        } control_msg{}; 
 
         msg.msg_control = control_msg.buf;
         msg.msg_controllen = sizeof(control_msg.buf);
@@ -74,12 +79,13 @@ public:
         cmsg->cmsg_len = CMSG_LEN(sizeof(int));
         std::memcpy(CMSG_DATA(cmsg), &fd_to_send, sizeof(int));
 
-        if (::sendmsg(socket_fd, &msg, 0) < 0) return std::unexpected(std::strerror(errno));
+        if (::sendmsg(socket_fd, &msg, 0) < 0) {
+            return std::unexpected(std::strerror(errno));
+        }
         return {};
     }
 
     static Result<UniqueFd> recv_fd(int socket_fd) {
-        // FIX: Use empty braces {} for complete zero-initialization
         struct msghdr msg{}; 
         char buf[1];
         
@@ -93,12 +99,14 @@ public:
         union {
             char buf[CMSG_SPACE(sizeof(int))];
             struct cmsghdr align;
-        } control_msg{}; // Zero-initialize the union too
+        } control_msg{}; 
 
         msg.msg_control = control_msg.buf;
         msg.msg_controllen = sizeof(control_msg.buf);
 
-        if (::recvmsg(socket_fd, &msg, 0) < 0) return std::unexpected(std::strerror(errno));
+        if (::recvmsg(socket_fd, &msg, 0) < 0) {
+            return std::unexpected(std::strerror(errno));
+        }
 
         struct cmsghdr* cmsg = CMSG_FIRSTHDR(&msg);
         if (cmsg && cmsg->cmsg_level == SOL_SOCKET && cmsg->cmsg_type == SCM_RIGHTS) {
@@ -110,6 +118,7 @@ public:
     }
 };
 
+// --- LINUX KERNEL FUTEX WRAPPER ---
 class IpcFutex {
 public:
     static void wait(std::atomic<uint32_t>& futex_word, uint32_t expected_val) {
