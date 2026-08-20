@@ -101,6 +101,7 @@ public:
     explicit VariableListener(std::span<std::byte> memory) {
         header_ = reinterpret_cast<VariableMemoryHeader*>(memory.data());
         slots_ = reinterpret_cast<EnvelopeSlot<Meta>*>(memory.data() + sizeof(VariableMemoryHeader));
+        heap_start_ = memory.data() + sizeof(VariableMemoryHeader) + (sizeof(EnvelopeSlot<Meta>) * header_->slot_capacity);
     }
 
     template <typename Callback>
@@ -175,4 +176,5 @@ private:
     EnvelopeSlot<Meta>* slots_;
     uint64_t local_sequence_{0};
     std::vector<std::byte> local_payload_buffer_;
+    std::byte* heap_start_;
 };
