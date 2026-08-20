@@ -13,6 +13,7 @@
 #include <climits>
 #include <atomic>
 #include <type_traits> 
+#include <thread>
 
 // --- COMPILE-TIME QoS POLICIES ---
 struct KeepLastPolicy {}; 
