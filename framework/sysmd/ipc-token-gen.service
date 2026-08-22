@@ -8,7 +8,7 @@ Type=oneshot
 ExecStart=/bin/sh -c 'touch /run/ipc_secrets && chmod 600 /run/ipc_secrets'
 
 # 2. Generate a random 32-char string, format it as an environment variable, and save it
-ExecStartPost=/bin/sh -c 'echo "IPC_SECRET_TOKEN=$(head -c 32 /dev/urandom | base64)" > /run/ipc_secrets'
+ExecStartPost=/bin/sh -c 'echo "export IPC_SECRET_TOKEN=$(head -c 32 /dev/urandom | base64)" > /run/ipc_secrets'
 RemainAfterExit=yes
 
 [Install]

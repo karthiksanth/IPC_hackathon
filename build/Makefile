@@ -130,17 +130,17 @@ ipc_broker/fast:
 .PHONY : ipc_broker/fast
 
 #=============================================================================
-# Target rules for targets named benchmark_app
+# Target rules for targets named Benchmark
 
 # Build rule for target.
-benchmark_app: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark_app
-.PHONY : benchmark_app
+Benchmark: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Benchmark
+.PHONY : Benchmark
 
 # fast build rule for target.
-benchmark_app/fast:
-	$(MAKE) $(MAKESILENT) -f developer/CMakeFiles/benchmark_app.dir/build.make developer/CMakeFiles/benchmark_app.dir/build
-.PHONY : benchmark_app/fast
+Benchmark/fast:
+	$(MAKE) $(MAKESILENT) -f developer/CMakeFiles/Benchmark.dir/build.make developer/CMakeFiles/Benchmark.dir/build
+.PHONY : Benchmark/fast
 
 # Help Target
 help:
@@ -150,7 +150,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... benchmark_app"
+	@echo "... Benchmark"
 	@echo "... ipc_broker"
 .PHONY : help
 

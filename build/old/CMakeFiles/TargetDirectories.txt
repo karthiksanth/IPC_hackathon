@@ -1,0 +1,8 @@
+/home/karthi_keyan/IPC_hackathon/build/CMakeFiles/edit_cache.dir
+/home/karthi_keyan/IPC_hackathon/build/CMakeFiles/rebuild_cache.dir
+/home/karthi_keyan/IPC_hackathon/build/framework/CMakeFiles/ipc_broker.dir
+/home/karthi_keyan/IPC_hackathon/build/framework/CMakeFiles/edit_cache.dir
+/home/karthi_keyan/IPC_hackathon/build/framework/CMakeFiles/rebuild_cache.dir
+/home/karthi_keyan/IPC_hackathon/build/developer/CMakeFiles/benchmark_app.dir
+/home/karthi_keyan/IPC_hackathon/build/developer/CMakeFiles/edit_cache.dir
+/home/karthi_keyan/IPC_hackathon/build/developer/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,20 @@
+[Unit]
+Description=
+Requires=ipc-token-gen.service 
+After=ipc-token-gen.service 
+
+[Service]
+Type=simple
+User=ipc_broker
+Group=ipc_group
+EnvironmentFile=/run/ipc_secrets
+
+# --- DEMO MODE: EXECUTING DIRECTLY FROM BUILD FOLDER ---
+# CMake will replace this with the absolute path to your local build directory
+ExecStart=/home/karthi_keyan/IPC_hackathon/build/framework/ipc_broker
+
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

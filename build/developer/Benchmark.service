@@ -1,0 +1,20 @@
+[Unit]
+Description=Producer and Consumer build
+Requires=ipc-token-gen.service 
+After=ipc-token-gen.service 
+
+[Service]
+Type=simple
+User=Benchmark
+Group=ipc_group
+EnvironmentFile=/run/ipc_secrets
+
+# --- DEMO MODE: EXECUTING DIRECTLY FROM BUILD FOLDER ---
+# CMake will replace this with the absolute path to your local build directory
+ExecStart=/home/karthi_keyan/IPC_hackathon/build/developer/Benchmark
+
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

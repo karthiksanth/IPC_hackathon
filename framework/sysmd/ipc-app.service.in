@@ -1,21 +1,18 @@
 [Unit]
 Description=@SERVICE_DESCRIPTION@
-# Ensure the token generator runs BEFORE this app starts
-Requires=ipc-token-gen.service
-After=ipc-token-gen.service
+Requires=ipc-token-gen.service @EXTRA_DEPENDENCIES@
+After=ipc-token-gen.service @EXTRA_DEPENDENCIES@
 
 [Service]
-# CMake replaces this with the exact path to the compiled C++ program
-ExecStart=/usr/bin/@EXECUTABLE_NAME@
-
-# This is the magic! systemd reads the file created by ipc-token-gen.service
-# and silently injects IPC_SECRET_TOKEN directly into the C++ app's memory.
+Type=simple
+User=@SERVICE_USER@
+Group=ipc_group
 EnvironmentFile=/run/ipc_secrets
 
-# CMake sets whether this runs as 'root' (Broker) or 'sensor_app' (Clients)
-User=@SERVICE_USER@
+# --- DEMO MODE: EXECUTING DIRECTLY FROM BUILD FOLDER ---
+# CMake will replace this with the absolute path to your local build directory
+ExecStart=@CMAKE_CURRENT_BINARY_DIR@/@EXECUTABLE_NAME@
 
-# Automatically restart the app if it crashes
 Restart=on-failure
 RestartSec=2
 

@@ -73,15 +73,15 @@ framework/CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.o: framework/CMakeFiles/i
 framework/CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.o: /home/karthi_keyan/IPC_hackathon/framework/src/ipc_broker.cpp
 framework/CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.o: framework/CMakeFiles/ipc_broker.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/karthi_keyan/IPC_hackathon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object framework/CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.o"
-	cd /home/karthi_keyan/IPC_hackathon/build/framework && g++-13 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT framework/CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.o -MF CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.o.d -o CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.o -c /home/karthi_keyan/IPC_hackathon/framework/src/ipc_broker.cpp
+	cd /home/karthi_keyan/IPC_hackathon/build/framework && /usr/bin/g++-13 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT framework/CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.o -MF CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.o.d -o CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.o -c /home/karthi_keyan/IPC_hackathon/framework/src/ipc_broker.cpp
 
 framework/CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.i"
-	cd /home/karthi_keyan/IPC_hackathon/build/framework && g++-13 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/karthi_keyan/IPC_hackathon/framework/src/ipc_broker.cpp > CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.i
+	cd /home/karthi_keyan/IPC_hackathon/build/framework && /usr/bin/g++-13 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/karthi_keyan/IPC_hackathon/framework/src/ipc_broker.cpp > CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.i
 
 framework/CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.s"
-	cd /home/karthi_keyan/IPC_hackathon/build/framework && g++-13 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/karthi_keyan/IPC_hackathon/framework/src/ipc_broker.cpp -o CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.s
+	cd /home/karthi_keyan/IPC_hackathon/build/framework && /usr/bin/g++-13 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/karthi_keyan/IPC_hackathon/framework/src/ipc_broker.cpp -o CMakeFiles/ipc_broker.dir/src/ipc_broker.cpp.s
 
 # Object files for target ipc_broker
 ipc_broker_OBJECTS = \

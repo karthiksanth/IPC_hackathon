@@ -117,25 +117,25 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-developer/CMakeFiles/benchmark_app.dir/rule:
-	cd /home/karthi_keyan/IPC_hackathon/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 developer/CMakeFiles/benchmark_app.dir/rule
-.PHONY : developer/CMakeFiles/benchmark_app.dir/rule
+developer/CMakeFiles/Benchmark.dir/rule:
+	cd /home/karthi_keyan/IPC_hackathon/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 developer/CMakeFiles/Benchmark.dir/rule
+.PHONY : developer/CMakeFiles/Benchmark.dir/rule
 
 # Convenience name for target.
-benchmark_app: developer/CMakeFiles/benchmark_app.dir/rule
-.PHONY : benchmark_app
+Benchmark: developer/CMakeFiles/Benchmark.dir/rule
+.PHONY : Benchmark
 
 # fast build rule for target.
-benchmark_app/fast:
-	cd /home/karthi_keyan/IPC_hackathon/build && $(MAKE) $(MAKESILENT) -f developer/CMakeFiles/benchmark_app.dir/build.make developer/CMakeFiles/benchmark_app.dir/build
-.PHONY : benchmark_app/fast
+Benchmark/fast:
+	cd /home/karthi_keyan/IPC_hackathon/build && $(MAKE) $(MAKESILENT) -f developer/CMakeFiles/Benchmark.dir/build.make developer/CMakeFiles/Benchmark.dir/build
+.PHONY : Benchmark/fast
 
 src/Benchmark_main.o: src/Benchmark_main.cpp.o
 .PHONY : src/Benchmark_main.o
 
 # target to build an object file
 src/Benchmark_main.cpp.o:
-	cd /home/karthi_keyan/IPC_hackathon/build && $(MAKE) $(MAKESILENT) -f developer/CMakeFiles/benchmark_app.dir/build.make developer/CMakeFiles/benchmark_app.dir/src/Benchmark_main.cpp.o
+	cd /home/karthi_keyan/IPC_hackathon/build && $(MAKE) $(MAKESILENT) -f developer/CMakeFiles/Benchmark.dir/build.make developer/CMakeFiles/Benchmark.dir/src/Benchmark_main.cpp.o
 .PHONY : src/Benchmark_main.cpp.o
 
 src/Benchmark_main.i: src/Benchmark_main.cpp.i
@@ -143,7 +143,7 @@ src/Benchmark_main.i: src/Benchmark_main.cpp.i
 
 # target to preprocess a source file
 src/Benchmark_main.cpp.i:
-	cd /home/karthi_keyan/IPC_hackathon/build && $(MAKE) $(MAKESILENT) -f developer/CMakeFiles/benchmark_app.dir/build.make developer/CMakeFiles/benchmark_app.dir/src/Benchmark_main.cpp.i
+	cd /home/karthi_keyan/IPC_hackathon/build && $(MAKE) $(MAKESILENT) -f developer/CMakeFiles/Benchmark.dir/build.make developer/CMakeFiles/Benchmark.dir/src/Benchmark_main.cpp.i
 .PHONY : src/Benchmark_main.cpp.i
 
 src/Benchmark_main.s: src/Benchmark_main.cpp.s
@@ -151,7 +151,7 @@ src/Benchmark_main.s: src/Benchmark_main.cpp.s
 
 # target to generate assembly for a file
 src/Benchmark_main.cpp.s:
-	cd /home/karthi_keyan/IPC_hackathon/build && $(MAKE) $(MAKESILENT) -f developer/CMakeFiles/benchmark_app.dir/build.make developer/CMakeFiles/benchmark_app.dir/src/Benchmark_main.cpp.s
+	cd /home/karthi_keyan/IPC_hackathon/build && $(MAKE) $(MAKESILENT) -f developer/CMakeFiles/Benchmark.dir/build.make developer/CMakeFiles/Benchmark.dir/src/Benchmark_main.cpp.s
 .PHONY : src/Benchmark_main.cpp.s
 
 # Help Target
@@ -162,7 +162,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... benchmark_app"
+	@echo "... Benchmark"
 	@echo "... src/Benchmark_main.o"
 	@echo "... src/Benchmark_main.i"
 	@echo "... src/Benchmark_main.s"

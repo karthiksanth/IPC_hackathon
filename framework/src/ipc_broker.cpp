@@ -78,7 +78,13 @@ public:
             exit(1);
         }
         allowed_gid_ = grp->gr_gid;
-        trusted_directory_ = "/opt/ipc_framework/bin/";
+        const char* custom_dir = std::getenv("IPC_TRUSTED_DIR");
+        if (custom_dir) {
+            trusted_directory_ = custom_dir;
+            std::cout << "[DEMO MODE] Trusted enclave overridden to: " << trusted_directory_ << "\n";
+        } else {
+            trusted_directory_ = "/opt/ipc_framework/bin/";
+        }
     }
 
     Result<void> run() {
@@ -157,7 +163,7 @@ private:
         std::string client_binary(exe_path);
 
         if (!client_binary.starts_with(trusted_directory_)) {
-            std::cerr << "[SECURITY REJECT] Binary outside enclave -> " << client_binary << "\n";
+            std::cerr << "[SECURITY REJECT] Binary outside enclave -> " << client_binary << "\n instead of "<<trusted_directory_;
             return;
         }
 
@@ -166,7 +172,7 @@ private:
         if (::recv(client_fd.get(), &req, sizeof(req), MSG_WAITALL) != sizeof(req)) return;
 
         // Ensure token is null-terminated for safety before comparison
-        req.secret_token[sizeof(req.secret_token) - 1] = '\0'; 
+        //req.secret_token[sizeof(req.secret_token) - 1] = '\0'; 
         
         if (!secure_compare(req.secret_token, expected_token_.c_str(), 32)) {
             std::cerr << "[SECURITY REJECT] Invalid Token from PID " << cred.pid << "\n";

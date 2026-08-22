@@ -14,6 +14,15 @@
 # EXTERNAL cache entries
 ########################
 
+//Value Computed by CMake
+AutonomousVehicleApps_BINARY_DIR:STATIC=/home/karthi_keyan/IPC_hackathon/build/developer
+
+//Value Computed by CMake
+AutonomousVehicleApps_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+AutonomousVehicleApps_SOURCE_DIR:STATIC=/home/karthi_keyan/IPC_hackathon/developer
+
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=/usr/bin/addr2line
 
@@ -28,15 +37,15 @@ CMAKE_BUILD_TYPE:STRING=
 CMAKE_COLOR_MAKEFILE:BOOL=ON
 
 //CXX compiler
-CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++-11
+CMAKE_CXX_COMPILER:STRING=/usr/bin/g++-13
 
 //A wrapper around 'ar' adding the appropriate '--plugin' option
 // for the GCC compiler
-CMAKE_CXX_COMPILER_AR:FILEPATH=/usr/bin/gcc-ar-11
+CMAKE_CXX_COMPILER_AR:FILEPATH=/usr/bin/gcc-ar-13
 
 //A wrapper around 'ranlib' adding the appropriate '--plugin' option
 // for the GCC compiler
-CMAKE_CXX_COMPILER_RANLIB:FILEPATH=/usr/bin/gcc-ranlib-11
+CMAKE_CXX_COMPILER_RANLIB:FILEPATH=/usr/bin/gcc-ranlib-13
 
 //Flags used by the CXX compiler during all build types.
 CMAKE_CXX_FLAGS:STRING=
@@ -188,6 +197,15 @@ CMAKE_TAPI:FILEPATH=CMAKE_TAPI-NOTFOUND
 // during the make.  This is useful for debugging only. With Visual
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
+
+//Value Computed by CMake
+IpcFramework_BINARY_DIR:STATIC=/home/karthi_keyan/IPC_hackathon/build/framework
+
+//Value Computed by CMake
+IpcFramework_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+IpcFramework_SOURCE_DIR:STATIC=/home/karthi_keyan/IPC_hackathon/framework
 
 //Value Computed by CMake
 ZeroCopyIPC_BINARY_DIR:STATIC=/home/karthi_keyan/IPC_hackathon/build
